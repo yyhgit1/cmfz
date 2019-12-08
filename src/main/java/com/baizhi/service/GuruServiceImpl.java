@@ -20,7 +20,6 @@ import java.util.UUID;
 public class GuruServiceImpl implements GuruService {
     @Autowired
     private GuruDao guruDao;
-
     //添加上师
     @DeleteRedisCacheAnnotation
     public Map add(Guru guru) {
