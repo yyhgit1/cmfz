@@ -42,6 +42,26 @@
             {edit: true, add: true, del: true, edittext: "编辑", addtext: "添加", deltext: "删除"},   //参数2:开启工具栏编辑按钮
             {
                 closeAfterEdit: true, reloadAfterSubmit: true,
+                afterSubmit: function (response, postData) {
+                    //console.log(response);
+                    var guruID = response.responseJSON.id;
+                    console.log(guruID);
+                    var status = response.responseJSON.status;
+                    if (status == "editok") {
+                        $.ajaxFileUpload({
+                            url: "${pageContext.request.contextPath}/guru/upload",
+                            datatype: "json",
+                            type: "post",
+                            data: {id: guruID},
+                            // 指定的上传input框的id
+                            fileElementId: "photo",
+                            success: function (data, status) {
+                                $("#guru").trigger("reloadGrid");//上传完成后刷新table表格
+                            }
+                        });
+                        return postData;
+                    }
+                }
             },//编辑面板的配置
             {    //开启添加完成模态框自动关闭
                 closeAfterAdd: true, reloadAfterSubmit: true,

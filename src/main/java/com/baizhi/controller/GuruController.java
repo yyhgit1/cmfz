@@ -43,15 +43,21 @@ public class GuruController {
             guruService.delete(guru.getId());
             map.put("status", "delok");
         } else if (oper.equals("edit")) {
-            guru.setPhoto(null);
-            guruService.update(guru);
-            map.put("status", "editok");
+            if (guru.getPhoto().equals("")) {
+                guru.setPhoto(null);
+                guruService.update(guru);
+            } else {
+                guruService.update(guru);
+                map.put("id", guru.getId());
+                map.put("status", "editok");
+            }
         }
         return map;
     }
 
     @RequestMapping("upload")
     public void upload(MultipartFile photo, String id, HttpSession session, HttpServletRequest request) throws UnknownHostException {
+        // System.out.println("异步上传");
         //获取路径
         String realPath = session.getServletContext().getRealPath("/back/upload/guruimg");
         //判断路径文件夹是否存在
@@ -83,6 +89,7 @@ public class GuruController {
         Guru guru = new Guru();
         guru.setId(id);
         guru.setPhoto(u);
+        System.out.println(guru + "========================");
         guruService.update(guru);
     }
 }

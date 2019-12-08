@@ -33,6 +33,7 @@ public class GuruServiceImpl implements GuruService {
     }
 
     //修改上师
+    @DeleteRedisCacheAnnotation
     public Map update(Guru guru) {
         Map map = new HashMap();
         guruDao.updateByPrimaryKeySelective(guru);
