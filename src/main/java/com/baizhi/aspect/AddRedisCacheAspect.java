@@ -14,13 +14,14 @@ import javax.annotation.Resource;
 @Aspect //定义切点
 @Configuration
 public class AddRedisCacheAspect {
-    @Resource
+    @Resource  //根据名字注入
     private StringRedisTemplate stringRedisTemplate;
-
     //环绕通知
     @Around("@annotation(com.baizhi.annotation.AddRedisCacheAnnotation)")
     public Object addRedisCache(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        // System.out.println("进入了缓存=======================");
+        //获取对象
+        // RedisTemplate redisTemplate = (RedisTemplate) ApplicationContextUtils.getBean("redisTemplate");
+        //System.out.println("进入了缓存=======================");
         //获取类名称
         String typeName = proceedingJoinPoint.getSignature().getDeclaringTypeName();
         //获取方法名
@@ -36,6 +37,8 @@ public class AddRedisCacheAspect {
             //累计添加参数
             builder.append(args[i]);
         }
+        //存入
+
         //创建新的方法名
         String newMethod = builder.toString();
         //对key进行序列化
@@ -45,6 +48,7 @@ public class AddRedisCacheAspect {
         //序列化值        创建对象
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
         //对值序列化
         stringRedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
@@ -65,10 +69,15 @@ public class AddRedisCacheAspect {
 
     @Around("@annotation(com.baizhi.annotation.DeleteRedisCacheAnnotation)")
     public Object deleteRedisCache(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        //System.out.println("进入了删除缓存====================");
         Object proceed = proceedingJoinPoint.proceed();
         //获取类名称
+        //对key进行序列化
+        stringRedisTemplate.setKeySerializer(new StringRedisSerializer());
         String typeName = proceedingJoinPoint.getSignature().getDeclaringTypeName();
-        stringRedisTemplate.opsForHash().delete(typeName);
+        //注意删除时删除的是大KEY  直接进行.delete操作    注意对key
+        stringRedisTemplate.delete(typeName);
+        // System.out.println("删除缓存==================");
         return proceed;
     }
 }

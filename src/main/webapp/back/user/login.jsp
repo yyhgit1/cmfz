@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <title>login</title>
     <link href="favicon.ico" rel="shortcut icon"/>
-    <link href="${pageContext.request.contextPath}/boot/css/bootstrap.min.css" rel="stylesheet">
-    <script src="${pageContext.request.contextPath}/boot/js/jquery-2.2.1.min.js"></script>
+    <link href="../boot/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../boot/js/jquery-2.2.1.min.js"></script>
     <script>
         function changeImage() {
             var img = document.getElementById('imgVcode');

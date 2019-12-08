@@ -1,6 +1,7 @@
 package com.baizhi.service;
 
 import com.baizhi.annotation.AddRedisCacheAnnotation;
+import com.baizhi.annotation.DeleteRedisCacheAnnotation;
 import com.baizhi.dao.GuruDao;
 import com.baizhi.entity.Guru;
 import org.apache.ibatis.session.RowBounds;
@@ -21,6 +22,7 @@ public class GuruServiceImpl implements GuruService {
     private GuruDao guruDao;
 
     //添加上师
+    @DeleteRedisCacheAnnotation
     public Map add(Guru guru) {
         Map map = new HashMap();
         String s = UUID.randomUUID().toString();
@@ -40,7 +42,9 @@ public class GuruServiceImpl implements GuruService {
     }
 
     //删除上师根据ID
+    @DeleteRedisCacheAnnotation
     public Map delete(String id) {
+        System.out.println("执行了删除操作");
         Map map = new HashMap();
         guruDao.deleteByPrimaryKey(id);
         map.put("status", "delok");
@@ -49,6 +53,7 @@ public class GuruServiceImpl implements GuruService {
 
     //查询所有上师
     @Transactional(propagation = Propagation.SUPPORTS)
+    @AddRedisCacheAnnotation
     public Map findAll(Integer page, Integer rows) {
         Map map = new HashMap();
         List<Guru> gurus = guruDao.selectByRowBounds(new Guru(), new RowBounds((page - 1) * rows, rows));
@@ -65,7 +70,7 @@ public class GuruServiceImpl implements GuruService {
     @Transactional(propagation = Propagation.SUPPORTS)
     @AddRedisCacheAnnotation
     public List<Guru> findAll() {
-        System.out.println("执行了查询所有方法");
+        // System.out.println("执行了查询所有方法");
         List<Guru> gurus = guruDao.selectAll();
         return gurus;
     }
