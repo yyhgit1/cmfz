@@ -35,7 +35,7 @@ public class AddRedisCacheAspect {
         StringBuilder builder = new StringBuilder(name);
         for (int i = 0; i < args.length; i++) {
             //累计添加参数
-            builder.append(args[i]);
+            builder.append(args[i] + ",");
         }
         //存入
 
